@@ -1,0 +1,34 @@
+name: rg
+trigger:
+ branches:
+  include:
+    - dev/module
+pool: default
+stages:
+- stage: stage1
+  displayName: initplan
+  pool: default
+  jobs:
+  - job: job1
+    steps:
+
+
+    - task: TerraformInstaller@1
+      inputs:
+        terraformVersion: 'latest'
+    - task: TerraformTaskV4@4
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/dev/module'
+        backendServiceArm: 'pkservice'
+        backendAzureRmResourceGroupName: 'DoNotDelete'
+        backendAzureRmStorageAccountName: 'donotdeleteaccount01'
+        backendAzureRmContainerName: 'donotdeletcontainer'
+        backendAzureRmKey: 'prashant1.tfstate'
+    - task: TerraformTaskV4@4
+      inputs:
+        provider: 'azurerm'
+        command: 'plan'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/dev/module'
+        environmentServiceNameAzureRM: 'pkservice'
